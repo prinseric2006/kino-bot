@@ -36,7 +36,7 @@ CHANNELS = [
 
 # Kinolar bazasi: "Kino kodi": Kanaldagi post ID-si
 MOVIES = {
-    "1200": 9,
+    "1200": 11,
     "102": 15,
     "103": 20,
 }
