@@ -1,39 +1,37 @@
 import os
 from telebot import TeleBot, types
 
-TOKEN = os.environ.get('8422439606:AAHfj2kTfPNz5SXla_6zHhaC8bPIIUkmMis')
+# Render Environment Variables bo'limidagi BOT_TOKEN nomli kalitdan tokenni oladi
+TOKEN = os.environ.get('BOT_TOKEN')
 bot = TeleBot(TOKEN)
 
 # 1. Maxfiy kanallaringiz ID-si va ularning Taklif havolalari (Join Request link)
-# Eslatma: Kanal ID-si har doim -100 bilan boshlanadi.
 CHANNELS = [
     {
-        "id": -1003920903568,  # 1-kanal ID-si
-        "link": "https://t.me/+TK5aA-Vv1zI4Njc6",  # 1-kanalning zayavka linki
+        "id": -1003920903568,
+        "link": "https://t.me/+TK5aA-Vv1zI4Njc6",
         "name": "1-Kanal"
     },
     {
-        "id": -1004397640907,  # 2-kanal ID-si
+        "id": -1004397640907,
         "link": "https://t.me/+DVwzomTsLS05Y2My",
         "name": "2-Kanal"
     },
     {
-        "id": -1004398516177,  # 3-kanal ID-si
+        "id": -1004398516177,
         "link": "https://t.me/+TcdO4ASzsiBhNTBi",
         "name": "3-Kanal"
     },
     {
-        "id": -1004442275540,  # 4-kanal ID-si
+        "id": -1004442275540,
         "link": "https://t.me/+ZXtkEoJCBEljM2Zi",
         "name": "4-Kanal"
     },
     {
-        "id": -1003753617217,  # 5-kanal ID-si
+        "id": -1003753617217,
         "link": "https://t.me/+U7E9evjCvTozMGIy",
-        "name": "5"
+        "name": "5-Kanal"
     }
-  
-    # Qolgan kanallarni ham shu tartibda 5 tagacha qo'shishingiz mumkin
 ]
 
 # Kinolar bazasi: "Kino kodi": Kanaldagi post ID-si
@@ -43,9 +41,9 @@ MOVIES = {
     "103": 20,
 }
 
-MAIN_MOVIE_CHANNEL = -1004407760150  # Kinolar joylangan asosiy kanal ID-si yoki @username
+MAIN_MOVIE_CHANNEL = -1004407760150  # Kinolar joylangan asosiy kanal ID-si
 
-# Zayavka yuborgan foydalanuvchilarni saqlash xotirasi (User ID: [Kanal ID-lari])
+# Zayavka yuborgan foydalanuvchilarni saqlash xotirasi
 PENDING_REQUESTS = {}
 
 # Foydalanuvchi kanallarga a'zo yoki zayavka yuborganini tekshirish
@@ -55,17 +53,16 @@ def check_subscriptions(user_id):
 
     for ch in CHANNELS:
         ch_id = ch["id"]
-        # 1-tekshiruv: Agar foydalanuvchi zayavka yuborgan bo'lsa, o'tkazamiz
+        # 1-tekshiruv: Agar foydalanuvchi zayavka yuborgan bo'lsa
         if ch_id in user_requests:
             continue
             
-        # 2-tekshiruv: Telegram kanaldagi statusini tekshirish (Agar qabul qilingan bo'lsa)
+        # 2-tekshiruv: Telegram kanaldagi statusini tekshirish
         try:
             member = bot.get_chat_member(chat_id=ch_id, user_id=user_id)
             if member.status in ['left', 'kicked']:
                 unsubscribed_channels.append(ch)
         except Exception:
-            # Tekshiruvda xatolik bo'lsa (hali a'zo emas deb hisoblaymiz)
             unsubscribed_channels.append(ch)
             
     return unsubscribed_channels
@@ -91,7 +88,6 @@ def handle_join_request(message):
     if user_id not in PENDING_REQUESTS:
         PENDING_REQUESTS[user_id] = set()
     
-    # Foydalanuvchi zayavka yuborgan kanal ID-sini saqlaymiz
     PENDING_REQUESTS[user_id].add(chat_id)
 
 @bot.message_handler(commands=['start'])
@@ -105,7 +101,7 @@ def send_welcome(message):
     else:
         text = (
             f"👋 Salom, {message.from_user.first_name}!\n\n"
-            "🎬 Kino kodini kiriting (masalan: `101`):"
+            "🎬 Kino kodini kiriting (masalan: `1200`):"
         )
         bot.send_message(message.chat.id, text, parse_mode="Markdown")
 
@@ -127,7 +123,7 @@ def callback_check(call):
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text="🎉 Barcha kanallarga zayavka yuborildi!\n\n🎬 Endi kino kodini yuborishingiz mumkin (masalan: `101`):"
+            text="🎉 Barcha kanallarga zayavka yuborildi!\n\n🎬 Endi kino kodini yuborishingiz mumkin (masalan: `1200`):"
         )
 
 @bot.message_handler(func=lambda message: True)
@@ -156,4 +152,4 @@ def handle_movie_code(message):
 
 if __name__ == '__main__':
     bot.infinity_polling()
-  
+    
