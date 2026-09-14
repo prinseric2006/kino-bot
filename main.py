@@ -37,8 +37,8 @@ CHANNELS = [
 # Kinolar bazasi: "Kino kodi": Kanaldagi post ID-si
 MOVIES = {
     "1200": 3,
-    "102": 15,
-    "103": 20,
+    "1201": 4,
+    "1202": 5,
 }
 
 MAIN_MOVIE_CHANNEL = -1004407760150  # Kinolar joylangan asosiy kanal ID-si
