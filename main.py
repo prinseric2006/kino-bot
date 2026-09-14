@@ -1,11 +1,36 @@
 import os
+from threading import Thread
+from flask import Flask
 from telebot import TeleBot, types
+
+# ---------------------------------------------------
+# 1. RENDER'DA BEPUL (WEB SERVICE) ISHLASHI UCHUN SOXTA WEB-SERVER
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot faol ishlamoqda!"
+
+def run():
+    # Render avtomatik ajratadigan portni oladi
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
+# Web-serverni fonda ishga tushirish
+keep_alive()
+
+# ---------------------------------------------------
+# 2. TELEGRAM BOT SOZLAMALARI
 
 # Render Environment Variables bo'limidagi BOT_TOKEN nomli kalitdan tokenni oladi
 TOKEN = os.environ.get('BOT_TOKEN')
 bot = TeleBot(TOKEN)
 
-# 1. Maxfiy kanallaringiz ID-si va ularning Taklif havolalari (Join Request link)
+# Maxfiy kanallaringiz ID-si va ularning Taklif havolalari (Join Request link)
 CHANNELS = [
     {
         "id": -1003920903568,
@@ -36,9 +61,9 @@ CHANNELS = [
 
 # Kinolar bazasi: "Kino kodi": Kanaldagi post ID-si
 MOVIES = {
-    "1200": 1,
-    "1201": 4,
-    "1202": 5,
+    "1200": 9,
+    "102": 15,
+    "103": 20,
 }
 
 MAIN_MOVIE_CHANNEL = -1004407760150  # Kinolar joylangan asosiy kanal ID-si
@@ -46,7 +71,9 @@ MAIN_MOVIE_CHANNEL = -1004407760150  # Kinolar joylangan asosiy kanal ID-si
 # Zayavka yuborgan foydalanuvchilarni saqlash xotirasi
 PENDING_REQUESTS = {}
 
-# Foydalanuvchi kanallarga a'zo yoki zayavka yuborganini tekshirish
+# ---------------------------------------------------
+# 3. YORDAMCHI FUNKSIYALAR
+
 def check_subscriptions(user_id):
     unsubscribed_channels = []
     user_requests = PENDING_REQUESTS.get(user_id, set())
@@ -67,7 +94,6 @@ def check_subscriptions(user_id):
             
     return unsubscribed_channels
 
-# Obuna tugmalarini yaratish
 def get_subscription_keyboard(unsubscribed_channels):
     markup = types.InlineKeyboardMarkup(row_width=1)
     
@@ -79,7 +105,9 @@ def get_subscription_keyboard(unsubscribed_channels):
     markup.add(check_btn)
     return markup
 
-# FOYDALANUVCHI KANALGA ZAYAVKA TASHAGANDA SHU HANDLER ISHLAYDI
+# ---------------------------------------------------
+# 4. HANDLERLAR (BOT ISHLASH MANTIG'I)
+
 @bot.chat_join_request_handler()
 def handle_join_request(message):
     user_id = message.from_user.id
@@ -101,7 +129,7 @@ def send_welcome(message):
     else:
         text = (
             f"👋 Salom, {message.from_user.first_name}!\n\n"
-            "🎬 Kino kodini kiriting (masalan: `69`):"
+            "🎬 Kino kodini kiriting (masalan: `1200`):"
         )
         bot.send_message(message.chat.id, text, parse_mode="Markdown")
 
@@ -123,7 +151,7 @@ def callback_check(call):
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text="🎉 Barcha kanallarga zayavka yuborildi!\n\n🎬 Endi kino kodini yuborishingiz mumkin (masalan: `69`):"
+            text="🎉 Barcha kanallarga zayavka yuborildi!\n\n🎬 Endi kino kodini yuborishingiz mumkin (masalan: `1200`):"
         )
 
 @bot.message_handler(func=lambda message: True)
@@ -147,9 +175,11 @@ def handle_movie_code(message):
             )
         except Exception as e:
             bot.reply_to(message, "⚠️ Kinoni yuborishda xatolik yuz berdi. Bot kanalda admin ekanligini tekshiring.")
+            print(f"Xatolik: {e}")
     else:
         bot.reply_to(message, "❌ Bunday kodli kino topilmadi.")
 
+# Botni ishga tushirish
 if __name__ == '__main__':
     bot.infinity_polling()
     
