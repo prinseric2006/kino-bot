@@ -64,8 +64,8 @@ MOVIES = {
     "1200": 11,
     "1201": 12,
     "1202": 13,
-    "1203": 4,
-    "1204": 5,
+    "1203": 15,
+    "1204": 16,
 }
 
 MAIN_MOVIE_CHANNEL = -1004407760150  # Kinolar joylangan asosiy kanal ID-si
