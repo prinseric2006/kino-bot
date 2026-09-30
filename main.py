@@ -170,25 +170,6 @@ MAIN_MOVIE_CHANNEL = -1004407760150  # Kinolar joylangan asosiy kanal ID-si
 # Zayavka yuborgan foydalanuvchilarni saqlash xotirasi
 PENDING_REQUESTS = {}
 
-def get_subscription_keyboard(unsubscribed_channels):
-    markup = types.InlineKeyboardMarkup(row_width=1)
-    
-    # 1. YouTube kanal tugmasi (havolani o'zingiznikiga almashtiring)
-    yt_btn = types.InlineKeyboardButton(
-        text="Obuna boʻlish➕", 
-        url="https://youtube.com/@cr1menal23?si=qzGTFp2N88-t4y_o"
-    )
-    markup.add(yt_btn)
-    
-    # 2. Qolgan Telegram kanallar tugmasi
-    for idx, ch in enumerate(unsubscribed_channels, start=1):
-        btn = types.InlineKeyboardButton(text=f"➕ {idx}-Telegram kanalga a'zo bo'lish", url=ch["link"])
-        markup.add(btn)
-        
-    check_btn = types.InlineKeyboardButton(text="✅ Obunani tekshirish", callback_data="check_sub")
-    markup.add(check_btn)
-    return markup
-
 # ---------------------------------------------------
 # 3. YORDAMCHI FUNKSIYALAR
 
