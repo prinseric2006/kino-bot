@@ -66,6 +66,7 @@ MOVIES = {
     "1202": 13,
     "1203": 15,
     "1204": 18,
+    "1205": 19,
 }
 
 MAIN_MOVIE_CHANNEL = -1004407760150  # Kinolar joylangan asosiy kanal ID-si
@@ -131,7 +132,7 @@ def send_welcome(message):
     else:
         text = (
             f"👋 Salom, {message.from_user.first_name}!\n\n"
-            "🎬 Kino kodini kiriting (masalan: `1200`):"
+            "🎬 Kino kodini kiriting (masalan: `69`):"
         )
         bot.send_message(message.chat.id, text, parse_mode="Markdown")
 
@@ -153,7 +154,7 @@ def callback_check(call):
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text="🎉 Barcha kanallarga zayavka yuborildi!\n\n🎬 Endi kino kodini yuborishingiz mumkin (masalan: `1200`):"
+            text="🎉 Barcha kanallarga zayavka yuborildi!\n\n🎬 Endi kino kodini yuborishingiz mumkin (masalan: `69`):"
         )
 
 @bot.message_handler(func=lambda message: True)
