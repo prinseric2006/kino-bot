@@ -200,7 +200,7 @@ def get_subscription_keyboard(unsubscribed_channels):
     markup = types.InlineKeyboardMarkup(row_width=1)
     
     # YouTube kanal uchun maxsus tugma
-    yt_btn = types.InlineKeyboardButton(text="▶️ YouTube kanalimizga obuna bo'lish", url=YOUTUBE_LINK)
+    yt_btn = types.InlineKeyboardButton(text="➕Link orqali obuna boʻlish", url=YOUTUBE_LINK)
     markup.add(yt_btn)
     
     # Telegram kanallar uchun tugmalar
