@@ -30,7 +30,7 @@ keep_alive()
 TOKEN = os.environ.get('BOT_TOKEN')
 bot = TeleBot(TOKEN)
 
-# Maxfiy kanallaringiz ID-si va ularning Taklif havolalari (Join Request link)
+# Maxfiy Telegram kanallaringiz ro'yxati
 CHANNELS = [
     {
         "id": -1003920903568,
@@ -50,9 +50,12 @@ CHANNELS = [
     {
         "id": -1003753617217,
         "link": "https://t.me/+U7E9evjCvTozMGIy",
-        "name": "5-Kanal"
+        "name": "4-Kanal"
     }
 ]
+
+# YouTube kanal havolasi
+YOUTUBE_LINK = "https://youtube.com/@cr1menal23?si=qzGTFp2N88-t4y_o"
 
 # Kinolar bazasi: "Kino kodi": Kanaldagi post ID-si
 MOVIES = {
@@ -196,8 +199,13 @@ def check_subscriptions(user_id):
 def get_subscription_keyboard(unsubscribed_channels):
     markup = types.InlineKeyboardMarkup(row_width=1)
     
+    # YouTube kanal uchun maxsus tugma
+    yt_btn = types.InlineKeyboardButton(text="▶️ YouTube kanalimizga obuna bo'lish", url=YOUTUBE_LINK)
+    markup.add(yt_btn)
+    
+    # Telegram kanallar uchun tugmalar
     for idx, ch in enumerate(unsubscribed_channels, start=1):
-        btn = types.InlineKeyboardButton(text=f"➕ {idx}-Kanalga a'zo bo'lish (Zayavka)", url=ch["link"])
+        btn = types.InlineKeyboardButton(text=f"➕ {idx}-Telegram kanalga a'zo bo'lish (Zayavka)", url=ch["link"])
         markup.add(btn)
         
     check_btn = types.InlineKeyboardButton(text="✅ Obunani / Zayavkani tekshirish", callback_data="check_sub")
@@ -223,7 +231,7 @@ def send_welcome(message):
     unsubscribed = check_subscriptions(user_id)
     
     if unsubscribed:
-        text = "⚠️ Botdan foydalanish uchun quyidagi kanallarga zayavka yuboring (ulaning):"
+        text = "⚠️ Botdan foydalanish uchun quyidagi kanallarga a'zo bo'ling/zayavka yuboring:"
         bot.send_message(message.chat.id, text, reply_markup=get_subscription_keyboard(unsubscribed))
     else:
         text = (
@@ -238,7 +246,7 @@ def callback_check(call):
     unsubscribed = check_subscriptions(user_id)
     
     if unsubscribed:
-        bot.answer_callback_query(call.id, "❌ Hali barcha kanallarga zayavka yubormadingiz!", show_alert=True)
+        bot.answer_callback_query(call.id, "❌ Hali barcha Telegram kanallarga zayavka yubormadingiz!", show_alert=True)
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
@@ -281,4 +289,3 @@ def handle_movie_code(message):
 # Botni ishga tushirish
 if __name__ == '__main__':
     bot.infinity_polling()
-    
